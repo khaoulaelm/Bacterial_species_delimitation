@@ -19,8 +19,8 @@ os.makedirs(output_dir, exist_ok=True)
 
 group_summary = []
 
-# Loop through thresholds (>= 50%)
-for threshold in range(111, 223): 
+# Loop through thresholds (>= 80%)
+for threshold in range(178, 223): 
     # Full graph (all strains)
     G = nx.Graph()
     G.add_nodes_from(df.index)
