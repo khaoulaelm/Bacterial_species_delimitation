@@ -20,7 +20,7 @@ os.makedirs(output_dir, exist_ok=True)
 # === Loop through thresholds ===
 group_summary = []
 
-for threshold in range(111, 223): #(>= 50%)
+for threshold in range(178, 223): #(>= 80%)
     G = nx.Graph()
     G.add_nodes_from(df.index)
 
