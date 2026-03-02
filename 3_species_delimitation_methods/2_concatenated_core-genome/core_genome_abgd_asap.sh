@@ -1,4 +1,9 @@
 #!/bin/bash
+# Author: Khaoula El Mchachti
+# Description: Run ABGD and ASAP species delimitation analyses from aligned core-genome
+# Input: core_gene_alignment.aln
+# Output: abgd_output/, asap_output/
+# Date: 2026-03-02
 
 #ABGD
 
