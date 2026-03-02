@@ -1,5 +1,28 @@
-# ABGD
-./abgd -a -o 16S_analysis/abgd_output/ -d JC69 ~/16S_all_aligned.fasta
+#!/bin/bash
+
+#ABGD
+echo "Running ABGD species delimitation..."
+
+mkdir -p abgd_output
+
+~/Bacterial_species_delimitation/3_species_delimitation_methods/ABGD/abgd \
+  -a \
+  -o abgd_output/ \
+  -d JC69 \
+  ~/Bacterial_species_delimitation/3_species_delimitation_methods/1_16S_rRNA_gene/16S_aligned.fasta
+
+echo "ABGD finished"
+
 
 # ASAP
-./asap -u -o 16S_analysis/asap_output/ ~/16S_all_aligned.fasta
+
+echo "Running ASAP species delimitation..."
+
+mkdir -p asap_output
+
+~/Bacterial_species_delimitation/3_species_delimitation_methods/ASAP/asap \
+  -u\
+  -o asap_output/ \
+  ~/Bacterial_species_delimitation/3_species_delimitation_methods/1_16S_rRNA_gene/16S_aligned.fasta
+  
+echo "ASAP finished"
