@@ -6,6 +6,8 @@
 #Output: prokka_results/<strain_name>/ (annotation files)
 #Date: 2026-03-02
 
+echo "===== Starting Prokka analysis ====="
+
 mkdir -p prokka_results
 
 GENOMES_DIR="$HOME/Bacterial_species_delimitation/1. Bacterial strains/genomes"
