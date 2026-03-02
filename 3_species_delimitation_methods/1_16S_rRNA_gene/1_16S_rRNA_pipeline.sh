@@ -1,9 +1,12 @@
 #!/bin/bash
 
+echo "Extracting and aligning 16S sequences"
+
 # Step 1: Extract 16S rRNA genes from Prokka .ffn
 
+echo "Extracting 16S sequences from .ffn files..."
 mkdir -p 16S_seq
-for ffn in prokka2/*/*.ffn; do
+for ffn in ~/Bacterial_species_delimitation/2_genomic_analyses/prokka/prokka_results/*/*.ffn; do
     base=$(basename "$ffn" .ffn)
     seqkit grep -nrp "16S.*ribosomal.*RNA" "$ffn" > "16S_seq/${base}.fasta"
 done
@@ -19,7 +22,18 @@ for file in 16S_seq/*.fasta; do
 done
 
 # Step 3: Concatenate all sequences
-cat 16S_all/*.fasta > 16S_all_final.fasta
+cat 16S_all/*.fasta > 16S_sequences.fasta
 
 # Step 4: Align with MAFFT
-mafft --auto 16S_all_final.fasta > 16S_all_aligned.fasta
+
+echo "Running MAFFT alignment..."
+mafft --auto 16S_sequences.fasta > 16S_aligned.fasta
+
+# Step 5: Clean intermediate files (keep only final outputs)
+echo "Cleaning intermediate files..."
+rm -rf 16S_seq 16S_all
+
+echo "Done"
+echo "Final files:"
+echo "  16S_sequences.fasta"
+echo "  16S_aligned.fasta"
