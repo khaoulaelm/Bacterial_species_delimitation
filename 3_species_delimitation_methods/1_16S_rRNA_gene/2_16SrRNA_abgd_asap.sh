@@ -1,4 +1,9 @@
 #!/bin/bash
+# Author: Khaoula El Mchachti
+# Description: Run ABGD and ASAP species delimitation analyses from aligned 16S sequences
+# Input: 16S_aligned.fasta
+# Output: abgd_output/, asap_output/
+# Date: 2026-03-02
 
 #ABGD
 echo "Running ABGD species delimitation..."
