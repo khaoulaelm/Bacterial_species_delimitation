@@ -1,8 +1,10 @@
 #!/bin/bash
-
-#Downloads genomes from NCBI Assembly
+# Author: Khaoula El Mchachti
+# Project: Bacterial species delimitation
+# Description: Downloads genomes from NCBI Assembly
 #Input: strains.txt (47 VUB strain names)
 #Output: <strain_name>.fna
+#Date: 2026-03-02
 
 # Directory to save the downloaded genomes
 mkdir -p genomes
