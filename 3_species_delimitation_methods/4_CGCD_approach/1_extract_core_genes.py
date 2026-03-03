@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
 
+"""
+Author: Khaoula El Mchachti
+Description: Extract all core genes (present in all strains)
+Input: gene_presence_absence.csv, prokka_results/
+Output: /core_genes_fasta/<gene_name>.fasta (one file per core gene; headers renamed to strain)
+Date: 2026-03-02
+"""
+
 import os
 import pandas as pd
 from Bio import SeqIO
 
 # Paths
-csv_path = os.path.expanduser("~/roary/gene_presence_absence.csv")
-prokka_base_dir = os.path.expanduser("~/prokka")
-output_dir = os.path.expanduser("~/core_genes_fasta")
+csv_path = os.path.expanduser("~/Bacterial_species_delimitation/2_genomic_analyses/roary/roary_results/gene_presence_absence.csv")
+prokka_base_dir = os.path.expanduser("~/Bacterial_species_delimitation/2_genomic_analyses/prokka/prokka_results")
+output_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/core_genes_fasta")
 
 # Make sure output directory exists
 os.makedirs(output_dir, exist_ok=True)
