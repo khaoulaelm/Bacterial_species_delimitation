@@ -19,7 +19,7 @@ output_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_deli
 # Make sure output directory exists
 os.makedirs(output_dir, exist_ok=True)
 
-print("===== Generating ABGD partition matrices =====")
+print("===== Generating partition matrices =====")
 
 # Loop through each gene folder in the ABGD results directory
 for gene_folder in os.listdir(abgd_dir):
