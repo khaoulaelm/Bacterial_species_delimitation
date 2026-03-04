@@ -15,8 +15,14 @@ import numpy as np
 # Directory where partition matrices are stored
 partition_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ABGD_partition_matrices")
 
-# Output path where the conspecificity matrix will be saved
-output_path = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/conspecificity_matrix.csv")
+# Directory where the file will be saved
+output_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ABGD_conspecificity_matrix")
+
+# Create the directory if it doesn't exist
+os.makedirs(output_dir, exist_ok=True)
+
+# File path inside the directory
+output_path = os.path.join(output_dir, "ABGD_conspecificity_matrix.csv")
 
 print("===== Generating conspecificity matrix =====")
 
