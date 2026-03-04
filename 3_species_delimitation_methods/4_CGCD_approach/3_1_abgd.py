@@ -15,16 +15,14 @@ import subprocess
 abgd_exec = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/ABGD/abgd")  
 
 # Directory containing the aligned core genes (in FASTA format)
-input_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/core_genes_aligned")
+input_dir = os.path.expanduser("core_genes_aligned")
 
 # Directory where the ABGD results will be stored
-main_output_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ABGD_results")
-
-# Path to the file that will store the list of failed genes
-failed_genes_file = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ABGD_results/failed_genes.txt")
+main_output_dir = os.path.expanduser("ABGD_results")
 
 # Ensure output root exists
 os.makedirs(main_output_dir, exist_ok=True)
+failed_genes_file = os.path.join(main_output_dir, "failed_genes.txt")
 
 # Open the failed genes log file in write mode
 with open(failed_genes_file, 'w') as failed_genes_log:
