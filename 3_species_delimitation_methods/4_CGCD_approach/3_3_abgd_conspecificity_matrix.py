@@ -4,7 +4,7 @@
 Author: Khaoula El Mchachti
 Description: Generate the conspecificity matrix by summing ABGD per-gene partition matrices.
 Input: ABGD_partition_matrices/ 
-Output: conspecificity_matrix.csv (pairwise counts of how many genes place two strains in the same group)
+Output: ABGD_conspecificity_matrix.csv (pairwise counts of how many genes place two strains in the same group)
 Date: 2026-03-04
 """
 
