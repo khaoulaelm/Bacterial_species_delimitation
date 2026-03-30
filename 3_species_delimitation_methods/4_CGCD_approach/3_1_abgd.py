@@ -5,7 +5,7 @@ Author: Khaoula El Mchachti
 Description: Run ABGD on each aligned core-gene (one gene at a time)
 Input: core_genes_aligned/
 Output: ABGD_results/<gene_name>/ (ABGD results per gene), failed_genes.txt (log file listing failures)
-Date: 2026-03-04
+Date: 2026-03-20
 """
 
 import os
