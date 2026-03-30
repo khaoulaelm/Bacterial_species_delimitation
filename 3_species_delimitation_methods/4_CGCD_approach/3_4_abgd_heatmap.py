@@ -2,9 +2,9 @@
 """
 Author: Khaoula El Mchachti
 Description: Plot a clustered heatmap (clustermap) of the ABGD conspecificity matrix.
-Input: conspecificity_matrix.csv
+Input: ABGD_conspecificity_matrix.csv
 Output: ABGD_heatmap.pdf
-Date: 2026-03-04
+Date: 2026-03-20
 """
 
 import pandas as pd
