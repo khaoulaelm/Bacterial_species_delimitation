@@ -5,7 +5,7 @@ Author: Khaoula El Mchachti
 Description: Extract the best ABGD partition for each gene and convert it into a pairwise partition matrix (1 = same group, 0 = different group).
 Input: ABGD_results/ (one folder per gene containing *.res.cvs and *.part.*.txt files)
 Output: ABGD_partition_matrices/ (<gene>.csv partition matrices)
-Date: 2026-03-04
+Date: 2026-03-20
 """
 
 import os
