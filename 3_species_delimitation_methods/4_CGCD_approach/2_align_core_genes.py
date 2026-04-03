@@ -5,7 +5,7 @@ Author: Khaoula El Mchachti
 Description: Align all core gene FASTA files using MAFFT
 Input: core_genes_fasta/*.fasta
 Output: core_genes_aligned/*_aligned.fasta
-Date: 2026-03-02
+Date: 2026-03-20
 """
 
 import os
