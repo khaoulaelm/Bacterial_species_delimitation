@@ -5,7 +5,7 @@ Author: Khaoula El Mchachti
 Description: Extract all core genes (present in all strains)
 Input: gene_presence_absence.csv, prokka_results/
 Output: /core_genes_fasta/<gene_name>.fasta (one file per core gene; headers renamed to strain)
-Date: 2026-03-02
+Date: 2026-03-20
 """
 
 import os
