@@ -2,7 +2,7 @@
 # Author: Khaoula El Mchachti
 # Project: Bacterial species delimitation
 # Description: Downloads genomes from NCBI Assembly
-#Input: strains.txt (47 VUB strain names)
+#Input: strains.txt (A text file containing strain names separated by commas.)
 #Output: <strain_name>.fna
 #Date: 2026-03-02
 
