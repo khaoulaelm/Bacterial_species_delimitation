@@ -10,7 +10,7 @@ echo "===== Starting Prokka analysis ====="
 
 mkdir -p prokka_results
 
-GENOMES_DIR="$HOME/Bacterial_species_delimitation/1. Bacterial strains/genomes"
+GENOMES_DIR="$HOME/Bacterial_species_delimitation/1_bacterial_strains/genomes"
 
 for file in "$GENOMES_DIR"/*.fasta; do
     base="$(basename "$file" .fasta)"
