@@ -7,6 +7,8 @@
 #Last modified: 2026-08-12
 
 echo "===== Extracting and aligning 16S sequences ====="
+echo " Please make sure the required Conda environment is activated."
+echo " This step requires MAFFT."
 
 # Find the directory
 SCRIPT_DIR="$(cd "$(dirname "$BASH_SOURCE[0]}")" && pwd)"
