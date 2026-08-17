@@ -6,21 +6,46 @@ Description: Extract the best ASAP partition for each gene and convert it into a
 Input: ASAP_results/ (<gene>.csv files), strains.txt
 Output: ASAP_partition_matrices/ (<gene>.csv partition matrices)
 Date: 2026-03-20
+Last modified: 2026-08-17
 """
 
 import os
 import csv
 
-# Base directory for ASAP results
-asap_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ASAP_results")
-output_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ASAP_partition_matrices")
-os.makedirs(output_dir, exist_ok=True)
+# Find the directory containing this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Project root directory
+PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../.."))
+
+# Define directories for ABGD results and where the partition matrices will be saved
+asap_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ASAP_results"
+)
+
+output_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ASAP_partition_matrices"
+)
+
+strains_file = os.path.join(
+    PROJECT_DIR,
+    "1_bacterial_strains",
+    "strains.txt"
+)
+
+# Make sure output directory exists
+os.makedirs(output_dir, exist_ok=True)
 
 print("===== Generating ASAP partition matrices =====")
 
 # Load strain names from strains.txt
-with open(os.path.expanduser("~/Bacterial_species_delimitation/1_bacterial_strains/strains.txt")) as f:
+with open(os.path.expanduser(strains_file)) as f:
     strains = [s.strip() for s in f.read().split(",") if s.strip()]
 
 # Create a matrix where 1 = same group, 0 = different
@@ -79,6 +104,10 @@ for gene in gene_dirs:
         save_partition_matrix(strains, matrix, output_path)
         print(f"Matrix saved for {gene}")
 
+    except Exception as e:
+        print(f"Error processing {gene}: {e}")
+
+print("\n Partition matrices saved in:", output_dir)
     except Exception as e:
         print(f"Error processing {gene}: {e}")
 
