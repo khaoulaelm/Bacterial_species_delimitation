@@ -1,59 +1,70 @@
 #!/usr/bin/env python3
+
 """
 Author: Khaoula El Mchachti
-Description: Plot a clustered heatmap (clustermap) of the ABGD conspecificity matrix.
-Input: ABGD_conspecificity_matrix.csv
-Output: ABGD_heatmap.pdf
+Description: Generate the conspecificity matrix by summing ABGD per-gene partition matrices.
+Input: ABGD_partition_matrices/ 
+Output: ABGD_conspecificity_matrix.csv (pairwise counts of how many genes place two strains in the same group)
 Date: 2026-03-20
+Last modified: 2026-08-17
 """
 
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import os
+import pandas as pd
+import numpy as np
 
-# Input and output paths
-matrix_path = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ABGD_conspecificity_matrix/ABGD_conspecificity_matrix.csv")
+# Find the directory containing this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Project root directory
+PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../.."))
+
+# Directory where partition matrices are stored
+partition_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ABGD_partition_matrices"
+)
 
 # Directory where the file will be saved
-output_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ABGD_plots")
+output_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ABGD_conspecificity_matrix")
 
 # Create the directory if it doesn't exist
 os.makedirs(output_dir, exist_ok=True)
 
 # File path inside the directory
-output_path = os.path.join(output_dir, "ABGD_heatmap.pdf")
+output_path = os.path.join(output_dir, "ABGD_conspecificity_matrix.csv")
 
-# Load matrix
-df = pd.read_csv(matrix_path, index_col=0)
+print("===== Generating conspecificity matrix =====")
 
-# Set up figure size
-#plt.figure(figsize=(20, 20))
 
-# Generate heatmap with clustering
-print("Generating clustered heatmap...")
-g = sns.clustermap(df, 
-               cmap="coolwarm",  # Better contrast
-               linewidths=0.2,   # Add gridlines
-               linecolor="black",# Grid color
-               cbar_kws={"shrink": 0.5},  # Smaller colorbar
-               xticklabels=True,  # Show x labels
-               yticklabels=True,  # Show y labels
-               figsize=(20, 20),  # Size
-               annot=False,       # Set to True if you want numbers in cells
-               fmt=".0f",         # No decimals for annotations
-               dendrogram_ratio=(0.1, 0.1) # Reduce dendrogram size
-              )
-        
+# Get all partition matrix files
+files = [f for f in os.listdir(partition_dir) if f.endswith(".csv")]
 
-cbar_pos = g.cax.get_position()
-g.cax.set_position([
-    cbar_pos.x0,          
-    cbar_pos.y0 + 0.1,         
-    cbar_pos.width * 0.5,  
-    cbar_pos.height *0.5     
-])
+# Check if partition matrices are available
+if not files:
+    print(" ERROR: No partition matrices found.")
+    exit()
 
-print("Saving heatmap to:", output_path)
-g.savefig(output_path, format='pdf')
-plt.close()
+# Use the first file to get all strains
+first_matrix = pd.read_csv(os.path.join(partition_dir, files[0]), index_col=0)
+strains = list(first_matrix.index)
+matrix = pd.DataFrame(0, index=strains, columns=strains, dtype=int)
+
+# Accumulate all matrices
+for f in files:
+    path = os.path.join(partition_dir, f)
+    df = pd.read_csv(path, index_col=0)
+    if list(df.index) != strains:
+        print(f" WARNING: Strain mismatch in {f}. Skipping.")
+        continue
+    matrix += df
+
+# Save the final matrix
+matrix.to_csv(output_path)
+print(f" Conspecificity matrix saved to:\n{output_path}")
