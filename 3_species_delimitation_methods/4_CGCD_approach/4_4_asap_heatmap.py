@@ -5,6 +5,7 @@ Description: Plot a clustered heatmap (clustermap) of the ASAP conspecificity ma
 Input: ASAP_conspecificity_matrix.csv
 Output: ASAP_heatmap.pdf
 Date: 2026-03-20
+Last modified: 2026-08-17
 """
 
 import pandas as pd
@@ -12,11 +13,28 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 
+# Find the directory containing this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Project root directory
+PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../.."))
+
 # Input and output paths
-matrix_path = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ASAP_conspecificity_matrix/ASAP_conspecificity_matrix.csv")
+matrix_path = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ASAP_conspecificity_matrix",
+    "ASAP_conspecificity_matrix.csv"
+)
 
 # Directory where the file will be saved
-output_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ASAP_plots")
+output_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ASAP_plots"
+)
 
 # Create the directory if it doesn't exist
 os.makedirs(output_dir, exist_ok=True)
