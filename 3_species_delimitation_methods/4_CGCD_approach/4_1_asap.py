@@ -6,16 +6,43 @@ Description: Run ASAP on each aligned core-gene (one gene at a time)
 Input: core_genes_aligned/
 Output: ASAP_results/<gene_name>/ (ASAP results per gene), failed_genes.txt (log file listing failures)
 Date: 2026-03-20
+Last modified: 2026-08-17
 """
 
 import os
 import subprocess
 
-# Paths
-asap_exec = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/ASAP/asap")
-input_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/core_genes_aligned")  
-output_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ASAP_results")
-failed_log = os.path.join(output_dir, "failed_genes.txt")
+# Find the directory containing this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Project root directory
+PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../.."))
+
+# Path to the ABGD executable
+asap_exec = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "ASAP",
+    "asap"
+)  
+
+# Directory containing the aligned core genes (in FASTA format)
+input_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "core_genes_aligned"
+)
+
+# Directory where the ABGD results will be stored
+output_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods", 
+    "4_CGCD_approach",   
+    "ASAP_results"
+)
+
+failed_log = os.path.join(output_dir, "asap_failed_genes.txt")
 
 # Ensure output directory exists
 os.makedirs(output_dir, exist_ok=True)
@@ -68,4 +95,4 @@ for fname in os.listdir(input_dir):
         with open(failed_log, "a") as flog:
             flog.write(f"{gene_name} (exception)\n")
 
-print("All genes processed with ABGD. Failed genes are logged in:", failed_genes_file)
+print("All genes processed with ASAP. Failed genes are logged in:", failed_log)
