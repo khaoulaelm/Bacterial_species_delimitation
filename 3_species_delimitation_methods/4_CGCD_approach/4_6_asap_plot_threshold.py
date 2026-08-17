@@ -6,6 +6,7 @@ species delimitation.
 Input: ASAP_threshold_summary.csv
 Output:Groups_vs_thresholds_asap.pdf
 Date: 2026-03-30
+Last modified: 2026-08-17
 """
 
 import matplotlib
@@ -15,11 +16,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from statistics import multimode
 
-def plateaus_by_value(df, col):
-    thr = df["Threshold_int"].to_list()
-    vals = df[col].to_list()
+# Find the directory containing this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-    ranges = []
+# Project root directory
+PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../.."))
+
+def find_plateaus(df, ycol="Num_Groups"):
+    
+    thr = df["Threshold_int"].to_list()
+    vals = df[ycol].to_list()
+
+    plateaus = []
     start = prev_thr = prev_val = None
 
     for t, v in zip(thr, vals):
@@ -27,45 +35,64 @@ def plateaus_by_value(df, col):
             start, prev_thr, prev_val = t, t, v
             continue
 
-        if (v == prev_val) and (t == prev_thr + 1):
+        # Continue plateau if same value and thresholds are consecutive
+        if v == prev_val and t == prev_thr + 1:
             prev_thr = t
         else:
-            ranges.append((prev_val, start, prev_thr))
+            # Close previous plateau
+            plateaus.append((prev_val, start, prev_thr))
+            # Start new plateau
             start, prev_thr, prev_val = t, t, v
 
+    # Close last plateau
     if prev_val is not None:
-        ranges.append((prev_val, start, prev_thr))
+        plateaus.append((prev_val, start, prev_thr))
 
-    grouped = {}
-    for v, a, b in ranges:
-        grouped.setdefault(v, []).append((a, b))
+    return plateaus
 
-    return grouped
+def best_plateau(df, ycol="Num_Groups"):
 
-def best_plateau(df, group_col):
-    mode_g = multimode(df[group_col])[0]
+    plateaus = find_plateaus(df, ycol=ycol)
+    if not plateaus:
+        return None, (None, None), []
 
-    P = plateaus_by_value(df, group_col)
-    ranges = P.get(mode_g, [])
+    # Sort by: longest length first, then highest start threshold (higher gene agreement)
+    
+    def plateau_key(p):
+        val, a, b = p
+        length = b - a
+        return (length, a)
 
-    if not ranges:
-        return mode_g, (None, None)
+    best = sorted(plateaus, key=plateau_key, reverse=True)[0]
+    best_val, a, b = best
+    return best_val, (a, b), plateaus
+    
+def prepare_df(path):
+    df = pd.read_csv(path)
 
-    # longest plateau
-    best = sorted(ranges, key=lambda x: -(x[1] - x[0]))[0]
-    return mode_g, best
+    # Require expected columns
+    if "Threshold" not in df.columns or "Num_Groups" not in df.columns:
+        raise ValueError("CSV must contain columns: 'Threshold' and 'Num_Groups'.")
 
+    df["Threshold"] = pd.to_numeric(df["Threshold"], errors="coerce")
+    df = df.dropna(subset=["Threshold"]).copy()
 
-def plot_and_save(df, group_col, mode_g, plateau, outfile, line_color):
+    # Create integer thresholds for plateau detection
+    df["Threshold_int"] = df["Threshold"].round().astype(int)
+
+    df = df.sort_values("Threshold_int").reset_index(drop=True)
+    return df
+
+def plot_and_save(df, ycol, best_val, best_range, outfile, line_color="blue"):
     fig, ax = plt.subplots()
 
-    ax.plot(df["Threshold"], df[group_col],
-            linewidth=2, color=line_color) #label="VUB"
+    ax.plot(df["Threshold_int"], df[ycol], linewidth=2, color=line_color)
 
-    ax.axhline(mode_g, linestyle="--",
-               color=line_color, label=f"best group number = {mode_g}")
+    a, b = best_range
+    if best_val is not None:
+        ax.axhline(best_val, linestyle="--", color=line_color,
+                   label=f"Best plateau: {best_val} groups")
 
-    a, b = plateau
     if a is not None:
         ax.axvspan(a, b, alpha=0.15, color=line_color, label=f"Plateau {a}-{b}")
 
@@ -77,46 +104,54 @@ def plot_and_save(df, group_col, mode_g, plateau, outfile, line_color):
     fig.savefig(outfile, format="pdf", dpi=300)
     plt.close(fig)
 
-def prepare_df(path):
-    df = pd.read_csv(path)
-    group_col = "Num_Groups" if "Num_Groups" in df.columns else "Num_VUB_Groups"
 
-    df["Threshold"] = pd.to_numeric(df["Threshold"], errors="coerce")
-    df = df.dropna(subset=["Threshold"]).copy()
-    df["Threshold_int"] = df["Threshold"].round().astype(int)
-    df = df.sort_values("Threshold_int").reset_index(drop=True)
+def run(csv_path, prefix="Groups_vs_threshold"):
+    df = prepare_df(csv_path)
 
-    return df, group_col
+    best_val, best_range, plateaus = best_plateau(df, ycol="Num_Groups")
 
-def run(asap_csv, prefix="Groups_vs_thresholds"):
-
-    asap, asap_col = prepare_df(asap_csv)
-    asap_mode, asap_plateau = best_plateau(asap, asap_col)
+    out_dir= os.path.join(
+        PROJECT_DIR,
+        "3_species_delimitation_methods",
+        "4_CGCD_approach",
+        "ASAP_plots"
+    )
     
-    out_dir = "ASAP_plots"
     os.makedirs(out_dir, exist_ok=True)
     
-    out_pdf = os.path.join(out_dir, f"{prefix}_asap.pdf")
+    # Save the selected plateau range for the next step
+    plateau_file = os.path.join(out_dir, "best_plateau.txt")
     
-    plot_and_save(
-        asap, asap_col, asap_mode, asap_plateau,
-        out_pdf,
-        line_color="blue")
+    out_pdf = os.path.join(out_dir, f"{prefix}.pdf")
+    plot_and_save(df, "Num_Groups", best_val, best_range, out_pdf, line_color="blue")
 
     print("Saved:", out_pdf)
     
-    if asap_mode is not None:
-        a, b = asap_plateau
-        print(f"Best plateau = {asap_mode} groups (Threshold {a}–{b})")
+    if best_val is not None:
+        a, b = best_range
+        
+        # Save the selected plateau range
+        with open(plateau_file, "w") as f:
+            f.write(f"{a}\t{b}\n")
+            
+        print(f"Best plateau = {best_val} groups (Threshold {a}–{b})")
+        print( "Best plateau saved to:", plateau_file)
+        
     else:
         print("No plateau detected.")
+
 
 if __name__ == "__main__":
     import sys
 
-    if len(sys.argv) == 3:
-        asap_csv = sys.argv[1]
+    if len(sys.argv) >= 2:
+        csv_path = sys.argv[1]
     else:
-        asap_csv = "ASAP_threshold_scan/ASAP_threshold_summary.csv"
-      
-    run(asap_csv)
+        csv_path = os.path.join (
+            PROJECT_DIR,
+            "3_species_delimitation_methods",
+            "4_CGCD_approach",
+            "ASAP_threshold_scan",
+            "ASAP_threshold_summary.csv"
+        )
+    run(csv_path, prefix="Groups_vs_threshold_asap")
