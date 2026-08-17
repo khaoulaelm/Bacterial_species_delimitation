@@ -6,17 +6,33 @@ Description: Generate the conspecificity matrix by summing ABGD per-gene partiti
 Input: ABGD_partition_matrices/ 
 Output: ABGD_conspecificity_matrix.csv (pairwise counts of how many genes place two strains in the same group)
 Date: 2026-03-20
+Last modified: 2026-08-17
 """
 
 import os
 import pandas as pd
 import numpy as np
 
+# Find the directory containing this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Project root directory
+PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../.."))
+
 # Directory where partition matrices are stored
-partition_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ABGD_partition_matrices")
+partition_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ABGD_partition_matrices"
+)
 
 # Directory where the file will be saved
-output_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ABGD_conspecificity_matrix")
+output_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ABGD_conspecificity_matrix")
 
 # Create the directory if it doesn't exist
 os.makedirs(output_dir, exist_ok=True)
