@@ -42,7 +42,7 @@ output_dir = os.path.join(
     "ABGD_results"
 )
 
-# ABGD is an older executable and may have problems withh long absolute paths.
+# ABGD is an older executable and may have problems with long absolute paths.
 # Therefore, I convert the automatically detected paths to relative paths before passing them to ABGD.
 
 abgd_exec_relative = os.path.relpath(
@@ -53,7 +53,7 @@ abgd_exec_relative = os.path.relpath(
 # Ensure output root exists
 os.makedirs(output_dir, exist_ok=True)
 
-failed_genes_file = os.path.join(output_dir, "failed_genes.txt")
+failed_genes_file = os.path.join(output_dir, "abgd_failed_genes.txt")
 
 print("===== Running ABGD on core genes =====")
 print("Please make sure that the appropriate environment is activated.")
