@@ -6,6 +6,7 @@ species delimitation.
 Input: ABGD_threshold_summary.csv
 Output:Groups_vs_threshold_abgd.pdf
 Date: 2026-03-20
+Last modified: 2026-08-17
 """
 
 import matplotlib
@@ -13,7 +14,13 @@ matplotlib.use("Agg")
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-from statistics import multimode
+
+# Find the directory containing this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Project root directory
+PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../.."))
+
 
 def find_plateaus(df, ycol="Num_Groups"):
     
@@ -103,16 +110,33 @@ def run(csv_path, prefix="Groups_vs_threshold"):
 
     best_val, best_range, plateaus = best_plateau(df, ycol="Num_Groups")
 
-    out_dir= "ABGD_plots"
+    out_dir= os.path.join(
+        PROJECT_DIR,
+        "3_species_delimitation_methods",
+        "4_CGCD_approach",
+        "ABGD_plots"
+    )
+    
     os.makedirs(out_dir, exist_ok=True)
-
+    
+    # Save the selected plateau range for the next step
+    plateau_file = os.path.join(out_dir, "best_plateau.txt")
+    
     out_pdf = os.path.join(out_dir, f"{prefix}.pdf")
     plot_and_save(df, "Num_Groups", best_val, best_range, out_pdf, line_color="blue")
 
     print("Saved:", out_pdf)
+    
     if best_val is not None:
         a, b = best_range
+        
+        # Save the selected plateau range
+        with open(plateau_file, "w") as f:
+            f.write(f"{a}\t{b}\n")
+            
         print(f"Best plateau = {best_val} groups (Threshold {a}–{b})")
+        print( "Best plateau saved to:", plateau_file)
+        
     else:
         print("No plateau detected.")
 
@@ -123,7 +147,12 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         csv_path = sys.argv[1]
     else:
-        csv_path = "ABGD_threshold_scan/ABGD_threshold_summary.csv"
-
+        csv_path = os.path.join (
+            PROJECT_DIR,
+            "3_species_delimitation_methods",
+            "4_CGCD_approach",
+            "ABGD_threshold_scan",
+            "ABGD_threshold_summary.csv"
+        )
     run(csv_path, prefix="Groups_vs_threshold_abgd")
  
