@@ -6,15 +6,33 @@ Description: Extract the best ABGD partition for each gene and convert it into a
 Input: ABGD_results/ (one folder per gene containing *.res.cvs and *.part.*.txt files)
 Output: ABGD_partition_matrices/ (<gene>.csv partition matrices)
 Date: 2026-03-20
+Last modified: 2026-08-16
 """
 
 import os
 import pandas as pd
 from collections import defaultdict
 
+# Find the directory containing this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Project root directory
+PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../.."))
+
 # Define directories for ABGD results and where the partition matrices will be saved
-abgd_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ABGD_results")
-output_dir = os.path.expanduser("~/Bacterial_species_delimitation/3_species_delimitation_methods/4_CGCD_approach/ABGD_partition_matrices")
+abgd_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ABGD_results"
+)
+
+output_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ABGD_partition_matrices"
+)
 
 # Make sure output directory exists
 os.makedirs(output_dir, exist_ok=True)
@@ -23,6 +41,7 @@ print("===== Generating partition matrices =====")
 
 # Loop through each gene folder in the ABGD results directory
 for gene_folder in os.listdir(abgd_dir):
+
     gene_path = os.path.join(abgd_dir, gene_folder)
     if not os.path.isdir(gene_path):
         continue
