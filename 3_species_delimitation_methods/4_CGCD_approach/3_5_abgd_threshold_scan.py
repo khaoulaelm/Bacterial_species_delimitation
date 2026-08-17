@@ -6,21 +6,41 @@ Remark: The CGCD approach is fundamentally threshold-free, as species boundaries
 Input: ABGD_conspecificity_matrix.csv
 Output: ABGD_threshold_scan/
 Date: 2026-03-20
+Last modified: 2026-08-17
 """
 
 import pandas as pd
 import networkx as nx
 import os
 
+# Find the directory containing this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Project root directory
+PROJECT_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../.."))
+
 # Load matrix
-matrix_path = "ABGD_conspecificity_matrix/ABGD_conspecificity_matrix.csv"
+matrix_path = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ABGD_conspecificity_matrix",
+    "ABGD_conspecificity_matrix.csv"
+)
+
 df = pd.read_csv(matrix_path, index_col=0)
 
 # Use all strains automatically
 strains = df.index.tolist()
 
 # Output folder
-output_dir = "ABGD_threshold_scan"
+output_dir = os.path.join(
+    PROJECT_DIR,
+    "3_species_delimitation_methods",
+    "4_CGCD_approach",
+    "ABGD_threshold_scan"
+)
+
 os.makedirs(output_dir, exist_ok=True)
 
 # >= 50% of core genes
@@ -50,7 +70,7 @@ for threshold in range(min_threshold, max_value + 1):
 
 # Save summary
 summary_df = pd.DataFrame(summary, columns=["Threshold", "Num_Groups"])
-summary_path = os.path.join(output_dir, "threshold_summary.csv")
+summary_path = os.path.join(output_dir, "ABGD_threshold_summary.csv")
 summary_df.to_csv(summary_path, index=False)
 
 print("Done.")
